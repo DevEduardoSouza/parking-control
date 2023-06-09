@@ -1,5 +1,9 @@
 package com.api.parkingcontrol.services;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,4 +49,16 @@ public class ParkingSpotService {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(parkingSpotRepository.save(parkingSpotModel));
     }
+
+
+    public List<ParkingSpotModel> findAll(){
+        return parkingSpotRepository.findAll();
+    }
+
+
+    public Optional<ParkingSpotModel> findById(UUID id) {
+        return parkingSpotRepository.findById(id);
+    }
+
+
 }
