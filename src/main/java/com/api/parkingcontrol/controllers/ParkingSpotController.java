@@ -44,7 +44,7 @@ public class ParkingSpotController {
         //Setar a data do meu objeto
         parkingSpotModel.setRegistrionDate(LocalDateTime.now(ZoneId.of("UTC")));
     
-        return ResponseEntity.status(HttpStatus.CREATED).body(parkingSpotService.save(parkingSpotModel));
+        return parkingSpotService.save(parkingSpotModel);
     }
     
 }
