@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,7 @@ import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -79,4 +81,25 @@ public class ParkingSpotController {
         return ResponseEntity.status(HttpStatus.OK).body("Parking Spot delete successfully");
     }
     
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> putParkingSpot(@PathVariable(value = "id") UUID id,
+                                                 @RequestBody @Valid ParkingSpotDto parkingSpotDto){
+        Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
+        if(!parkingSpotModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking spot not found");
+        }
+
+        /*
+            Como estou utilizando um dto o ID e Data de cadastro não podem ser alterados, 
+            então crio um parkingSpotModel para receber o dto na linha 99 em seguida uso 
+            parkingSpotModelOptional para pegar os outros dados que não podem ser editados
+         */
+        ParkingSpotModel parkingSpotModel = new ParkingSpotModel();
+        BeanUtils.copyProperties(parkingSpotDto, parkingSpotModel);
+        parkingSpotModel.setId( parkingSpotModelOptional.get().getId() );
+        parkingSpotModel.setRegistrionDate( parkingSpotModelOptional.get().getRegistrionDate());
+
+        return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.save(parkingSpotModel));
+
+    }
 }
